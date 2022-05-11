@@ -14,6 +14,7 @@ const SignUp: FC = () => {
             auth.createUserWithEmailAndPassword(registerEmail.current!.value, registerPassword.current!.value).then( async (userAuth: UserCredential) => {
                 await userAuth?.user?.updateProfile({ displayName })
                 console.log(userAuth);
+                window.location.reload();
             });
         } catch (error: any) {
             console.log(error.message)
