@@ -1,6 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@firebase/app': ^0.7.24
+  '@firebase/firestore': ^3.4.9
   '@types/react': ^18.0.0
   '@types/react-dom': ^18.0.0
   '@vitejs/plugin-react': ^1.3.0
@@ -13,6 +15,8 @@ specifiers:
   vite: ^2.9.7
 
 dependencies:
+  '@firebase/app': 0.7.24
+  '@firebase/firestore': 3.4.9_@firebase+app@0.7.24
   firebase: 9.8.1
   framer-motion: 6.3.3_ef5jwxihqo6n7gxfmzogljlgcm
   react: 18.1.0
