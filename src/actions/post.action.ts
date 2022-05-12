@@ -6,7 +6,6 @@ type Data = [{
     commentAuthor: string,
     commentAuthorId: string,
     text: string,
-    message?: string
 }]
 
 export const GET_POSTS = "GET_POSTS";
