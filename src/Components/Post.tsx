@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
-import { updateDoc, doc } from 'firebase/firestore';
-import { db } from "../utils/firebase.config";
 import Delete from "./Delete";
 import CommentPost from "./CommentPost";
+import { useDispatch } from "react-redux";
+import { editPost } from "../actions/post.action";
 
 type Post = {
     author: string,
@@ -21,6 +21,8 @@ type User = {
 const Post: FC<{ post: Post, user: User }> = ( { post, user } ) => {
     const [ edit, setEdit ] = useState( false );
     const [ editMessage, setEditMessage ] = useState<string | null>( null );
+    const dispatch = useDispatch();
+
 
     const dateFormater = ( date: string | number | Date ): string => {
         let currentDate = new Date();
@@ -36,43 +38,53 @@ const Post: FC<{ post: Post, user: User }> = ( { post, user } ) => {
     }
 
     const handleEdit = (): void => {
-        setEdit( false );
         if (editMessage) {
-            updateDoc( doc( db, "posts", post.id ), { message: editMessage } )
+            dispatch<any>(
+                editPost( {
+                    id: post.id,
+                    message: editMessage,
+                } )
+            );
+            setEdit( false );
         }
     }
 
-    return (
-        <div className="post">
-            <div className="post-header">
-                <div className="left-part">
-                    <div className="title">
-                        <span>{ post.author[ 0 ] }</span>
-                        <h2>{ post.author }</h2>
+        return (
+            <div className="post">
+                <div className="post-header">
+                    <div className="left-part">
+                        <div className="title">
+                            { post?.author && (
+                                <>
+                                    <span>{ post?.author[ 0 ] }</span>
+                                    <h2>{ post?.author }</h2>
+                                </>
+                            ) }
+                        </div>
+                        <h5>{ dateFormater( post.date ) }</h5>
                     </div>
-                    <h5>{ dateFormater( post.date ) }</h5>
+                    { post.authorId === user?.uid && (
+                        <div className="right-part">
+                            <span onClick={ () => setEdit( !edit ) }><i
+                                className="fa-solid fa-pen-to-square"></i></span>
+                            <Delete postId={ post.id }/>
+                        </div>
+                    ) }
                 </div>
-                { post.authorId === user?.uid && (
-                    <div className="right-part">
-                        <span onClick={ () => setEdit( !edit ) }><i className="fa-solid fa-pen-to-square"></i></span>
-                        <Delete postId={post.id} />
-                    </div>
-                ) }
-            </div>
-            { edit ? (
-                <>
+                { edit ? (
+                    <>
                     <textarea name="message" id="message" value={ editMessage ? editMessage : post.message } autoFocus
                               onChange={ ( e ) => setEditMessage( e.target?.value ) }></textarea>
-                    <button className="edit-btn" onClick={ () => handleEdit() }>
-                        Modifier le message
-                    </button>
-                </>
-            ) : (
-                <p>{ editMessage ? editMessage : post.message }</p>
-            ) }
-            <CommentPost post={post} />
-        </div>
-    );
-};
+                        <button className="edit-btn" onClick={ () => handleEdit() }>
+                            Modifier le message
+                        </button>
+                    </>
+                ) : (
+                    <p>{ editMessage ? editMessage : post.message }</p>
+                ) }
+                <CommentPost post={ post }/>
+            </div>
+        );
+    };
 
-export default Post;
+    export default Post;

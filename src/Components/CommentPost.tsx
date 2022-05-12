@@ -1,10 +1,9 @@
 import React, { FC, FormEvent, useRef, useState } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../utils/firebase.config";
-import firebase from "firebase/compat";
-import User = firebase.User;
-import { updateDoc, doc } from "firebase/firestore";
+import { auth } from "../utils/firebase.config";
 import CommentCard from "./CommentCard";
+import { useDispatch } from "react-redux";
+import { addComment } from "../actions/post.action";
 
 type Post = {
     author: string,
@@ -18,6 +17,7 @@ type Post = {
 const CommentPost: FC<{ post: Post }> = ( { post } ) => {
     const [ user, setUser ] = useState<any>( null );
     const answerContent = useRef<HTMLTextAreaElement>( null );
+    const dispatch = useDispatch();
 
     onAuthStateChanged( auth, ( currentUser ) => {
         setUser( currentUser );
@@ -43,7 +43,7 @@ const CommentPost: FC<{ post: Post }> = ( { post } ) => {
             } ]
         }
 
-        updateDoc( doc( db, "posts", post.id ), { comments: data } );
+        dispatch<any>( addComment( post.id, data ) )
         answerContent!.current!.value = "";
     }
 

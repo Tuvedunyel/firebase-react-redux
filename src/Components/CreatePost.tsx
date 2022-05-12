@@ -1,6 +1,6 @@
 import { FC, FormEvent, useRef } from 'react';
-import { addDoc, collection } from 'firebase/firestore'
-import { db } from "../utils/firebase.config";
+import { useDispatch } from "react-redux";
+import { addPost, getPosts } from "../actions/post.action";
 
 type Data = {
     author: string,
@@ -12,6 +12,7 @@ type Data = {
 
 const CreatePost: FC<{ uid: string, displayName: string }> = ( { uid, displayName } ) => {
     const message = useRef<HTMLTextAreaElement>( null )
+    const dispatch = useDispatch()
 
     const handlePost = async ( e: FormEvent<HTMLFormElement> ) => {
         e.preventDefault()
@@ -23,8 +24,9 @@ const CreatePost: FC<{ uid: string, displayName: string }> = ( { uid, displayNam
             comments: null,
             date: Date.now()
         }
-        await addDoc( collection(db, "posts"), data )
+        await dispatch<any>(addPost(data))
         message.current!.value = "";
+        dispatch<any>(getPosts());
     }
     return (
         <div className="new-post-modal">

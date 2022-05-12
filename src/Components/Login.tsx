@@ -16,8 +16,6 @@ const Login: FC = () => {
             console.log(err.message);
             setError(true);
         }
-
-        console.log(loginEmail.current?.value, loginPassword.current?.value);
     }
     return (
         <div className="login-container">

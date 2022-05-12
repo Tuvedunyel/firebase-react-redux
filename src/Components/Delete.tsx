@@ -1,11 +1,12 @@
 import { FC } from 'react';
-import { deleteDoc, doc } from 'firebase/firestore';
-import { db } from "../utils/firebase.config";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../actions/post.action";
 
 const Delete: FC<{ postId: string }> = ( { postId } ) => {
+    const dispatch = useDispatch();
 
     const handleDelete = (): void => {
-        deleteDoc(doc(db, "posts", postId));
+        dispatch<any>(deletePost(postId))
     }
 
     return (
